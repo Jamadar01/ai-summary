@@ -1,35 +1,17 @@
-from openai import OpenAI
-from dotenv import load_dotenv
-import os
+from fastapi import FastAPI
+from Services.summaryServices import DocServices
+app=FastAPI()
 
-load_dotenv()
+@app.get("/")
+async def read_root():
+    return "Hello World"
 
-client=OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY"),
-)
 
-def summary(story):
-    response = client.responses.create(
-        model="gpt-4o-mini",
-        instructions="""You are a story summarization assistant. Analyze the uploaded story and provide:
-        1. Story Summary
-        2. Main Characters
-        3. Key Events
-        4. Theme or Moral (if applicable)
-
-        Keep the summary concise, accurate, and factual. Do not add details that are not present in the story.""",
-        max_output_tokens=100,
-        temperature=0.2,
-        input=story
-    )
-    return response.output[0].content[0].text
-
-def main():
+@app.get("/sumarize")
+async def read_root():
     with open("story.txt", "r", encoding="utf-8") as f:
         story=f.read()
-        print(summary(story))
+        summary=DocServices.summary(story)
         print("end")
+    return summary
 
-
-if __name__ == "__main__":
-    main()
