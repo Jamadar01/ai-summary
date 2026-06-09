@@ -15,3 +15,16 @@ async def read_root():
         print("end")
     return summary
 
+@app.get("/extract")
+async def read_root():
+    with open("suspense.txt", "r", encoding="utf-8") as f:
+        story=f.read()
+        summary=DocServices.extract(story)
+        print("end")
+    return summary
+
+@app.get("/ask")
+async def read_root():  
+    summary=DocServices.ask("who is main character in story?")
+    print("end")
+    return summary
